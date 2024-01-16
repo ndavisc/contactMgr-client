@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getContact } from '../api/ContactService';
-// import { toastError, toastSuccess } from '../api/ToastService';
+import { toastError, toastSuccess } from '../api/ToastService';
 
 const ContactDetail = ({ updateContact, updateImage }) => {
     const inputRef = useRef();
@@ -23,10 +23,10 @@ const ContactDetail = ({ updateContact, updateImage }) => {
             const { data } = await getContact(id);
             setContact(data);
             console.log(data);
-            // toastSuccess('Contact retrieved');
+            toastSuccess('Contact retrieved');
         } catch (error) {
             console.log(error);
-            // toastError(error.message);
+            toastError(error.message);
         }
     };
 
@@ -34,17 +34,17 @@ const ContactDetail = ({ updateContact, updateImage }) => {
         inputRef.current.click();
     };
 
-    const udpatePhoto = async (file) => {
+    const updatePhoto = async (file) => {
         try {
             const formData = new FormData();
             formData.append('file', file, file.name);
             formData.append('id', id);
             await updateImage(formData);
             setContact((prev) => ({ ...prev, photoUrl: `${prev.photoUrl}?updated_at=${new Date().getTime()}` }));
-            // toastSuccess('Photo updated');
+            toastSuccess('Photo updated');
         } catch (error) {
             console.log(error);
-            // toastError(error.message);
+            toastError(error.message);
         }
     };
 
@@ -56,7 +56,7 @@ const ContactDetail = ({ updateContact, updateImage }) => {
         event.preventDefault();
         await updateContact(contact);        
         fetchContact(id);
-        // toastSuccess('Contact Updated');
+        toastSuccess('Contact Updated');
     };
 
     useEffect(() => {
@@ -114,7 +114,7 @@ const ContactDetail = ({ updateContact, updateImage }) => {
             </div>
 
             <form style={{ display: 'none' }}>
-                <input type='file' ref={inputRef} onChange={(event) => udpatePhoto(event.target.files[0])} name='file' accept='image/*' />
+                <input type='file' ref={inputRef} onChange={(event) => updatePhoto(event.target.files[0])} name='file' accept='image/*' />
             </form>
         </>
     )

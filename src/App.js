@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-// import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
 import Header from './components/Header'
 import ContactList from './components/ContactList'
-import { getContacts, saveContact, udpatePhoto } from './api/ContactService';
+import { getContacts, saveContact, updatePhoto } from './api/ContactService';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ContactDetail from './components/ContactDetail';
-// import { toastError } from './api/ToastService';
-// import { ToastContainer } from 'react-toastify';
+import { toastError } from './api/ToastService';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const modalRef = useRef();
@@ -23,7 +24,7 @@ function App() {
     status: '',
   });
 
-  const getAllContacts = async (page = 0, size = 10) => {
+  const getAllContacts = async (page = 0, size = 2) => {
     try {
       setCurrentPage(page);
       const { data } = await getContacts(page, size);
@@ -31,7 +32,7 @@ function App() {
       console.log(data);
     } catch (error) {
       console.log(error);
-      // toastError(error.message);
+      toastError(error.message);
     }
   };
 
@@ -46,8 +47,9 @@ function App() {
       const formData = new FormData();
       formData.append('file', file, file.name);
       formData.append('id', data.id);
-      const { data: photoUrl } = await udpatePhoto(formData);
+      const { data: photoUrl } = await updatePhoto(formData);
       toggleModal(false);
+      console.log(photoUrl);
       setFile(undefined);
       fileRef.current.value = null;
       setValues({
@@ -61,7 +63,7 @@ function App() {
       getAllContacts();
     } catch (error) {
       console.log(error);
-      // toastError(error.message);
+      toastError(error.message);
     }
   };
 
@@ -71,16 +73,16 @@ function App() {
       console.log(data);
     } catch (error) {
       console.log(error);
-      // toastError(error.message);
+      toastError(error.message);
     }
   };
 
   const updateImage = async (formData) => {
     try {
-      const { data: photoUrl } = await udpatePhoto(formData);
+      const { data: photoUrl } = await updatePhoto(formData);
     } catch (error) {
       console.log(error);
-      // toastError(error.message);
+      toastError(error.message);
     }
   };
 
@@ -149,7 +151,7 @@ function App() {
           </form>
         </div>
       </dialog>
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </>
   );
 }
